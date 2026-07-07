@@ -1,0 +1,32 @@
+{
+  "name": "browser-interaction",
+  "version": "0.1.0",
+  "description": "Headless browser CLI harness for AI-driven web automation",
+  "type": "module",
+  "license": "MIT",
+  "author": "Rafael Farias",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rafael-farias/browser-interaction"
+  },
+  "keywords": [
+    "browser-automation",
+    "headless",
+    "cli",
+    "ai-agent",
+    "playwright",
+    "web-automation"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "server": "node server.js",
+    "browser": "node browser.js"
+  },
+  "dependencies": {
+    "express": "4.21.2",
+    "playwright": "1.52.0"
+  }
+}

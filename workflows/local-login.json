@@ -1,0 +1,58 @@
+{
+  "name": "local-login",
+  "description": "Login automation on the embedded test server",
+  "url": "http://localhost:3000/login",
+  "workflow": {
+    "type": "form-authentication",
+    "steps": [
+      {
+        "step": 1,
+        "action": "goto",
+        "target": "http://localhost:3000/login",
+        "description": "Navigate to the login page"
+      },
+      {
+        "step": 2,
+        "action": "fill",
+        "selector": "#username",
+        "value": "admin",
+        "description": "Enter username"
+      },
+      {
+        "step": 3,
+        "action": "fill",
+        "selector": "#password",
+        "value": "1234",
+        "description": "Enter password"
+      },
+      {
+        "step": 4,
+        "action": "click",
+        "selector": "#login-btn",
+        "description": "Submit the login form"
+      },
+      {
+        "step": 5,
+        "action": "snapshot",
+        "description": "Capture screenshot for verification"
+      }
+    ]
+  },
+  "selectors": {
+    "usernameField": "#username",
+    "passwordField": "#password",
+    "loginButton": "#login-btn",
+    "errorMessage": "#error-message",
+    "logoutButton": "#logout-btn"
+  },
+  "expectedResults": {
+    "successUrl": "http://localhost:3000/dashboard",
+    "pageTitle": "Dashboard",
+    "mainHeading": "Welcome to Dashboard",
+    "failureIndicator": "Invalid Credentials"
+  },
+  "metadata": {
+    "created": "2026-07-07",
+    "status": "validated"
+  }
+}

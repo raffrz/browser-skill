@@ -1,0 +1,8 @@
+node_modules/
+.browser-session/
+screenshots/
+INSTRUCTIONS.md
+
+# Protect credentials in workflows
+workflows/*-credentials.json
+workflows/.env
