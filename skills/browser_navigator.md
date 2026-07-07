@@ -1,29 +1,29 @@
 # Browser Navigator - Agent Instructions
 
-You have access to a CLI script (`browser.js`) that controls a headless browser in batch mode. Commands are queued and executed all at once in a single browser session.
+You have access to a globally installed CLI tool called `browser-skill` that controls a headless browser in batch mode. Commands are queued and executed all at once in a single browser session.
 
 ## Usage Flow
 
 ```bash
-node browser.js begin          # Start batch session
-node browser.js <command>      # Queue commands (as many as needed)
-node browser.js end            # Execute all at once and close the browser
+browser-skill begin          # Start batch session
+browser-skill <command>      # Queue commands (as many as needed)
+browser-skill end            # Execute all at once and close the browser
 ```
 
 ## Available Commands
 
 | Command | Usage | Description |
 |---------|-------|-------------|
-| `begin` | `node browser.js begin` | Start a new batch session |
-| `goto`  | `node browser.js goto <url>` | Navigate to URL |
-| `fill`  | `node browser.js fill <selector> <text>` | Fill an input field |
-| `click` | `node browser.js click <selector>` | Click an element |
-| `snapshot` | `node browser.js snapshot` | Take a screenshot for visual inspection |
-| `wait`  | `node browser.js wait <ms>` | Wait N milliseconds |
-| `summary` | `node browser.js summary` | Print current page state without interacting |
-| `status` | `node browser.js status` | Show queued commands (before executing) |
-| `clear` | `node browser.js clear` | Discard the queue without executing |
-| `end`   | `node browser.js end [--headed] [--slow]` | Execute all queued commands |
+| `begin` | `browser-skill begin` | Start a new batch session |
+| `goto`  | `browser-skill goto <url>` | Navigate to URL |
+| `fill`  | `browser-skill fill <selector> <text>` | Fill an input field |
+| `click` | `browser-skill click <selector>` | Click an element |
+| `snapshot` | `browser-skill snapshot` | Take a screenshot for visual inspection |
+| `wait`  | `browser-skill wait <ms>` | Wait N milliseconds |
+| `summary` | `browser-skill summary` | Print current page state without interacting |
+| `status` | `browser-skill status` | Show queued commands (before executing) |
+| `clear` | `browser-skill clear` | Discard the queue without executing |
+| `end`   | `browser-skill end [--headed] [--slow]` | Execute all queued commands |
 
 ## Flags (for `end`)
 
@@ -63,18 +63,18 @@ Prefer selectors in this order:
 
 ## Persistent State
 
-The browser retains cookies and session between batches (uses `launchPersistentContext`). After a successful login, subsequent batches will already be authenticated.
+The browser retains cookies and session between batches (stored in `~/.browser-skill/session/`). After a successful login, subsequent batches will already be authenticated.
 
 ## Example: Successful Login
 
 ```bash
-node browser.js begin
-node browser.js goto http://localhost:3000/login
-node browser.js fill #username admin
-node browser.js fill #password 1234
-node browser.js click #login-btn
-node browser.js snapshot
-node browser.js end
+browser-skill begin
+browser-skill goto http://localhost:3000/login
+browser-skill fill "#username" "admin"
+browser-skill fill "#password" "1234"
+browser-skill click "#login-btn"
+browser-skill snapshot
+browser-skill end
 ```
 
 Expected result after execution: the `click` output will show `[URL] http://localhost:3000/dashboard` and `[H1] Welcome to Dashboard`.
@@ -84,10 +84,10 @@ Expected result after execution: the `click` output will show `[URL] http://loca
 If the previous batch output showed `[MESSAGE] #error-message → "Invalid Credentials"`, build a new batch with correct credentials:
 
 ```bash
-node browser.js begin
-node browser.js goto http://localhost:3000/login
-node browser.js fill #username admin
-node browser.js fill #password 1234
-node browser.js click #login-btn
-node browser.js end
+browser-skill begin
+browser-skill goto http://localhost:3000/login
+browser-skill fill "#username" "admin"
+browser-skill fill "#password" "1234"
+browser-skill click "#login-btn"
+browser-skill end
 ```

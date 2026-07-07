@@ -1,17 +1,23 @@
+#!/usr/bin/env node
+
 import { chromium } from 'playwright';
-import { mkdirSync, existsSync } from 'fs';
+import { mkdirSync, existsSync, readFileSync } from 'fs';
 import path from 'path';
+import os from 'os';
 import { createQueueManager } from './lib/queue.js';
+import { runSetup } from './lib/setup.js';
 
 // ─── Configuration ────────────────────────────────────────────────────────────
 
-const SESSION_DIR = './.browser-session';
-const SCREENSHOTS_DIR = './screenshots';
+const HOME_DIR = path.join(os.homedir(), '.browser-skill');
+const SESSION_DIR = path.join(HOME_DIR, 'session');
+const SCREENSHOTS_DIR = path.join(HOME_DIR, 'screenshots');
 
+if (!existsSync(HOME_DIR)) mkdirSync(HOME_DIR, { recursive: true });
 if (!existsSync(SESSION_DIR)) mkdirSync(SESSION_DIR, { recursive: true });
 if (!existsSync(SCREENSHOTS_DIR)) mkdirSync(SCREENSHOTS_DIR, { recursive: true });
 
-const { load: loadQueue, save: saveQueue, clear: clearQueue } = createQueueManager(SESSION_DIR);
+const { load: loadQueue, save: saveQueue, clear: clearQueue } = createQueueManager(HOME_DIR);
 
 // ─── Page Summary ─────────────────────────────────────────────────────────────
 
@@ -152,7 +158,6 @@ async function executeBatch(queue, options = {}) {
     console.log('✅ Batch completed successfully!');
   } catch (err) {
     console.error(`❌ Error during execution: ${err.message}`);
-    // Print page summary on error for debugging
     try {
       const summary = await getPageSummary(page);
       console.error(`Page state at time of error:\n${summary}`);
@@ -167,39 +172,71 @@ async function executeBatch(queue, options = {}) {
 
 function printHelp() {
   console.log(`
-Headless CLI Harness - Batch Mode
-═════════════════════════════════════════════════════════
+browser-skill — Browser automation skill for AI agents
+═══════════════════════════════════════════════════════════
+
+Usage:
+  browser-skill <command> [args]
 
 Session control:
-  node browser.js begin                    Start a new batch session
-  node browser.js end [--headed] [--slow]  Execute all queued commands
+  begin                        Start a new batch session
+  end [--headed] [--slow]      Execute all queued commands
 
 Commands (queued after 'begin'):
-  node browser.js goto <url>               Navigate to URL
-  node browser.js fill <selector> <text>   Fill an input field
-  node browser.js click <selector>         Click an element
-  node browser.js snapshot                 Take a screenshot
-  node browser.js wait <ms>                Wait N milliseconds
-  node browser.js summary                  Print current page state
+  goto <url>                   Navigate to URL
+  fill <selector> <text>       Fill an input field
+  click <selector>             Click an element
+  snapshot                     Take a screenshot
+  wait <ms>                    Wait N milliseconds
+  summary                      Print current page state
 
 Utilities:
-  node browser.js status                   Show queued commands
-  node browser.js clear                    Discard the queue
+  status                       Show queued commands
+  clear                        Discard the queue
 
-Flags (for 'end'):
-  --headed    Open the browser visibly
-  --slow      500ms delay between actions
+Setup:
+  --setup kiro                 Install skill into ~/.kiro/steering/
+  --setup generic              Print skill instructions to stdout
+  --setup path                 Print path to skill .md file
+
+Info:
+  --version                    Show version
+  --help                       Show this help
+
+Data directory: ${HOME_DIR}
 `);
 }
 
 function main() {
   const rawArgs = process.argv.slice(2);
+
+  // ─── Handle flags ───────────────────────────────────────────────────────
+  if (rawArgs.includes('--help') || rawArgs.includes('-h')) {
+    printHelp();
+    process.exit(0);
+  }
+
+  if (rawArgs.includes('--version') || rawArgs.includes('-v')) {
+    const pkgPath = new URL('./package.json', import.meta.url);
+    const pkg = JSON.parse(readFileSync(pkgPath, 'utf-8'));
+    console.log(pkg.version);
+    process.exit(0);
+  }
+
+  if (rawArgs.includes('--setup')) {
+    const setupIdx = rawArgs.indexOf('--setup');
+    const target = rawArgs[setupIdx + 1] || 'generic';
+    runSetup(target);
+    process.exit(0);
+  }
+
+  // ─── Commands ───────────────────────────────────────────────────────────
   const headed = rawArgs.includes('--headed');
   const slow = rawArgs.includes('--slow');
   const args = rawArgs.filter(a => !a.startsWith('--'));
   const command = args[0];
 
-  if (!command || command === 'help') {
+  if (!command) {
     printHelp();
     process.exit(0);
   }
@@ -207,7 +244,7 @@ function main() {
   const queue = loadQueue();
 
   switch (command) {
-    // ─── Session Control ────────────────────────────────────────────────────
+    // ─── Session Control ──────────────────────────────────────────────────
     case 'begin': {
       if (queue.active) {
         console.log('⚠️  Batch session already active. Use "end" to execute or "clear" to reset.');
@@ -247,7 +284,7 @@ function main() {
       break;
     }
 
-    // ─── Queueable Commands ─────────────────────────────────────────────────
+    // ─── Queueable Commands ───────────────────────────────────────────────
     case 'goto':
     case 'fill':
     case 'click':
@@ -255,23 +292,22 @@ function main() {
     case 'wait':
     case 'summary': {
       if (!queue.active) {
-        console.error('❌ No active batch session. Run "node browser.js begin" first.');
+        console.error('❌ No active batch session. Run "browser-skill begin" first.');
         process.exit(1);
       }
 
       const cmdArgs = args.slice(1);
 
-      // Validate required args
       if (command === 'goto' && cmdArgs.length === 0) {
-        console.error('Error: URL required. Usage: node browser.js goto <url>');
+        console.error('Error: URL required. Usage: browser-skill goto <url>');
         process.exit(1);
       }
       if (command === 'click' && cmdArgs.length === 0) {
-        console.error('Error: Selector required. Usage: node browser.js click <selector>');
+        console.error('Error: Selector required. Usage: browser-skill click <selector>');
         process.exit(1);
       }
       if (command === 'fill' && cmdArgs.length < 2) {
-        console.error('Error: Selector and text required. Usage: node browser.js fill <selector> <text>');
+        console.error('Error: Selector and text required. Usage: browser-skill fill <selector> <text>');
         process.exit(1);
       }
 
@@ -282,7 +318,7 @@ function main() {
     }
 
     default:
-      console.error(`Unknown command: "${command}". Use "help" to see options.`);
+      console.error(`Unknown command: "${command}". Use "browser-skill --help" to see options.`);
       process.exit(1);
   }
 }

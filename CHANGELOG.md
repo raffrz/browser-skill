@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- Global CLI install via `npm install -g browser-skill` (bin field in package.json)
+- `--setup kiro` command to install skill into `~/.kiro/steering/` with manual inclusion front-matter
+- `--setup generic` command to print skill instructions to stdout
+- `--setup path` command to print path to the skill .md file
+- `--version` flag to display current version
+- `--help` flag with full usage documentation
+- `lib/setup.js` module for setup command logic
+
+### Changed
+- Session data moved from local `.browser-session/` to `~/.browser-skill/session/` (global, persistent)
+- Screenshots moved from local `screenshots/` to `~/.browser-skill/screenshots/`
+- Queue file stored at `~/.browser-skill/_queue.json`
+- CLI error messages now reference `browser-skill` instead of `node browser.js`
+- README rewritten to focus on skill installation and agent integration
+- `skills/browser_navigator.md` updated to reference global `browser-skill` command
+
 ## [0.1.0] - 2026-07-07
 
 ### Initial Release
