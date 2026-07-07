@@ -1,5 +1,5 @@
 {
-  "name": "browser-interaction",
+  "name": "browser-skill",
   "version": "0.1.0",
   "description": "Headless browser CLI harness for AI-driven web automation",
   "type": "module",
@@ -7,7 +7,7 @@
   "author": "Rafael Farias",
   "repository": {
     "type": "git",
-    "url": "https://github.com/rafael-farias/browser-interaction"
+    "url": "https://github.com/rafael-farias/browser-skill"
   },
   "keywords": [
     "browser-automation",

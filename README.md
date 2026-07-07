@@ -1,4 +1,4 @@
-# browser-interaction
+# browser-skill
 
 A headless browser CLI harness designed for AI-driven web automation. Instead of relying on complex protocols, it exposes simple shell commands that an AI agent can call sequentially to navigate, fill forms, click buttons, and capture page state.
 
