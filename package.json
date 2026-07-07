@@ -1,10 +1,13 @@
 {
   "name": "browser-skill",
   "version": "0.1.0",
-  "description": "Headless browser CLI harness for AI-driven web automation",
+  "description": "Drop-in browser skill for AI agents — navigate, fill, click and read pages via shell commands",
   "type": "module",
+  "bin": {
+    "browser-skill": "./browser.js"
+  },
   "license": "MIT",
-  "author": "Rafael Farias",
+  "author": "raffrz",
   "repository": {
     "type": "git",
     "url": "https://github.com/raffrz/browser-skill"
