@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- `--setup kiro` now installs skill to `~/.kiro/skills/browser-skill/SKILL.md` (Kiro skills format) instead of steering directory
+- `skills/browser_navigator.md` updated with front-matter (`name`, `description`) for Kiro skill discovery
+- Removed manual inclusion front-matter wrapper — skill file is copied as-is
+- README updated to reflect new Kiro skill install path
+
+## [0.2.0] - 2026-07-08
+
 ### Added
 - Global CLI install via `npm install -g browser-skill` (bin field in package.json)
 - `--setup kiro` command to install skill into `~/.kiro/steering/` with manual inclusion front-matter

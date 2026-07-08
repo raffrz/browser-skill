@@ -1,3 +1,8 @@
+---
+name: browser-skill
+description: Controla um browser headless via CLI para navegação, preenchimento de formulários, cliques e leitura de páginas. Use quando o usuário pedir para acessar um site, fazer login em uma página web, preencher formulários, clicar em botões ou extrair informações de páginas web.
+---
+
 # Browser Navigator - Agent Instructions
 
 You have access to a globally installed CLI tool called `browser-skill` that controls a headless browser in batch mode. Commands are queued and executed all at once in a single browser session.
