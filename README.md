@@ -51,7 +51,7 @@ The agent reads this to understand the page and decide the next action.
 browser-skill --setup kiro
 ```
 
-This copies the skill instructions to `~/.kiro/steering/browser-skill.md` with manual inclusion. Then use `#browser-skill` in any Kiro chat to give the agent browser capabilities.
+This copies the skill instructions to `~/.kiro/skills/browser-skill/SKILL.md`. Then use `#browser-skill` in any Kiro chat to give the agent browser capabilities.
 
 ### Other AI Agents
 
